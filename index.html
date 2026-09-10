@@ -3,110 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Расчёт оборотов гребного вала и изменения крутящего момента при замене редуктора ПЛМ"
-    />
+    <meta name="description" content="Расчёт характеристик редуктора подвесного лодочного мотора" />
     <title>Калькулятор редуктора ПЛМ</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="script.js" type="module"></script>
   </head>
   <body>
-    <header class="hero">
-      <div class="shell">
-        <div class="eyebrow"><span aria-hidden="true">⚙</span> Инструмент для водномоторников</div>
-        <h1>Калькулятор<br /><span>редуктора ПЛМ</span></h1>
-        <p class="hero__lead">
-          Сравните обороты гребного вала и теоретический крутящий момент до и после замены шестерён.
-        </p>
-      </div>
-    </header>
-
+    <header class="hero"><div class="shell"><div class="eyebrow"><span aria-hidden="true">⚙</span> Инструмент для водномоторников</div><h1>Калькулятор<br /><span>редуктора ПЛМ</span></h1><p class="hero__lead">Рассчитайте, как замена шестерён повлияет на обороты винта, скорость и крутящий момент.</p></div></header>
     <main class="shell calculator">
-      <section class="panel input-panel" aria-labelledby="input-title">
-        <div class="section-heading">
-          <span class="step">01</span>
-          <div>
-            <h2 id="input-title">Исходные данные</h2>
-            <p>Укажите параметры двигателя и редукторов</p>
-          </div>
-        </div>
-
+      <section class="panel input-panel" aria-labelledby="input-title"><div class="section-heading"><span class="step">01</span><div><h2 id="input-title">Исходные данные</h2><p>Параметры двигателя, редукторов и винта</p></div></div>
         <form id="calculator-form" novalidate>
-          <label class="field">
-            <span class="field__label">Обороты двигателя</span>
-            <span class="input-wrap">
-              <input id="engine-rpm" type="text" inputmode="numeric" value="6000" autocomplete="off" />
-              <span class="unit">об/мин</span>
-            </span>
-            <span class="error" id="engine-rpm-error"></span>
-          </label>
-
-          <div class="gear-inputs">
-            <label class="field">
-              <span class="field__label"><i class="dot dot--old"></i> Старое передаточное число</span>
-              <span class="input-wrap">
-                <input id="old-ratio" type="text" inputmode="decimal" value="1,75" autocomplete="off" />
-                <span class="unit">: 1</span>
-              </span>
-              <span class="error" id="old-ratio-error"></span>
-            </label>
-
-            <label class="field">
-              <span class="field__label"><i class="dot dot--new"></i> Новое передаточное число</span>
-              <span class="input-wrap">
-                <input id="new-ratio" type="text" inputmode="decimal" value="2,08" autocomplete="off" />
-                <span class="unit">: 1</span>
-              </span>
-              <span class="error" id="new-ratio-error"></span>
-            </label>
-          </div>
-        </form>
-      </section>
-
-      <section class="results" aria-labelledby="results-title" aria-live="polite">
-        <div class="section-heading">
-          <span class="step">02</span>
-          <div>
-            <h2 id="results-title">Результат расчёта</h2>
-            <p>Наглядное сравнение характеристик</p>
-          </div>
-        </div>
-
-        <div class="comparison">
-          <article class="result-card result-card--old">
-            <div class="result-card__top"><span>БЫЛО</span><span id="old-ratio-badge">1,75 : 1</span></div>
-            <p>Обороты гребного вала</p>
-            <strong id="old-rpm">3 429</strong>
-            <small>об/мин</small>
-          </article>
-          <div class="arrow" aria-hidden="true">→</div>
-          <article class="result-card result-card--new">
-            <div class="result-card__top"><span>СТАЛО</span><span id="new-ratio-badge">2,08 : 1</span></div>
-            <p>Обороты гребного вала</p>
-            <strong id="new-rpm">2 885</strong>
-            <small>об/мин</small>
-          </article>
-        </div>
-
-        <div class="metrics">
-          <article class="metric">
-            <span class="metric__icon metric__icon--rpm" aria-hidden="true">↘</span>
-            <div><p>Изменение оборотов</p><strong id="rpm-change">−15,9%</strong></div>
-          </article>
-          <article class="metric">
-            <span class="metric__icon metric__icon--torque" aria-hidden="true">↗</span>
-            <div><p>Изменение крутящего момента</p><strong id="torque-change">+18,9%</strong></div>
-          </article>
-        </div>
-
-        <div class="notice">
-          <span aria-hidden="true">i</span>
-          <p><strong>Обратите внимание</strong>Расчёт крутящего момента идеализирован и не учитывает механические потери в редукторе.</p>
-        </div>
-      </section>
-    </main>
-
-    <footer class="shell">Теоретический расчёт · Фактические значения могут отличаться</footer>
+          <label class="field"><span class="field__label">Обороты двигателя</span><span class="input-wrap"><input id="engine-rpm" inputmode="numeric" value="6000" /><span class="unit">об/мин</span></span><span class="error" id="engine-rpm-error"></span></label>
+          <fieldset class="gear-set"><legend><i class="dot dot--old"></i> Старый редуктор</legend><div class="two-columns"><label class="field"><span class="field__label">Ведущая шестерня</span><span class="input-wrap"><input id="old-drive" inputmode="numeric" value="12" /><span class="unit">зуб.</span></span><span class="error" id="old-drive-error"></span></label><label class="field"><span class="field__label">Ведомая шестерня</span><span class="input-wrap"><input id="old-driven" inputmode="numeric" value="21" /><span class="unit">зуб.</span></span><span class="error" id="old-driven-error"></span></label></div><label class="manual-toggle"><input id="old-manual" type="checkbox" /> Ввести передаточное число вручную</label><label class="field ratio-field"><span class="field__label">Передаточное число</span><span class="input-wrap"><input id="old-ratio" inputmode="decimal" value="1,75" readonly /><span class="unit">: 1</span></span><span class="error" id="old-ratio-error"></span></label></fieldset>
+          <fieldset class="gear-set"><legend><i class="dot dot--new"></i> Новый редуктор</legend><div class="two-columns"><label class="field"><span class="field__label">Ведущая шестерня</span><span class="input-wrap"><input id="new-drive" inputmode="numeric" value="13" /><span class="unit">зуб.</span></span><span class="error" id="new-drive-error"></span></label><label class="field"><span class="field__label">Ведомая шестерня</span><span class="input-wrap"><input id="new-driven" inputmode="numeric" value="27" /><span class="unit">зуб.</span></span><span class="error" id="new-driven-error"></span></label></div><label class="manual-toggle"><input id="new-manual" type="checkbox" /> Ввести передаточное число вручную</label><label class="field ratio-field"><span class="field__label">Передаточное число</span><span class="input-wrap"><input id="new-ratio" inputmode="decimal" value="2,08" readonly /><span class="unit">: 1</span></span><span class="error" id="new-ratio-error"></span></label></fieldset>
+          <div class="two-columns prop-inputs"><label class="field"><span class="field__label">Шаг винта</span><span class="input-wrap"><input id="pitch" inputmode="decimal" value="13" /><span class="unit">дюйм.</span></span><span class="error" id="pitch-error"></span></label><label class="field"><span class="field__label">Фактическая скорость</span><span class="input-wrap"><input id="actual-speed" inputmode="decimal" value="45" /><span class="unit">км/ч</span></span><span class="error" id="actual-speed-error"></span></label></div>
+        </form></section>
+      <section class="results" aria-labelledby="results-title" aria-live="polite"><div class="section-heading"><span class="step">02</span><div><h2 id="results-title">Результат расчёта</h2><p>Наглядное сравнение характеристик</p></div></div>
+        <div class="comparison"><article class="result-card result-card--old"><div class="result-card__top"><span>БЫЛО</span><span id="old-ratio-badge">1,75 : 1</span></div><p>Обороты гребного вала</p><strong id="old-rpm">3 429</strong><small>об/мин</small><div class="card-detail"><span>Теоретическая скорость</span><b id="old-speed">67,9 км/ч</b></div></article><div class="arrow" aria-hidden="true">→</div><article class="result-card result-card--new"><div class="result-card__top"><span>СТАЛО</span><span id="new-ratio-badge">2,08 : 1</span></div><p>Обороты гребного вала</p><strong id="new-rpm">2 889</strong><small>об/мин</small><div class="card-detail"><span>Изменение оборотов</span><b id="rpm-change">−15,7%</b></div></article></div>
+        <div class="metrics"><article class="metric"><span class="metric__icon metric__icon--rpm">↗</span><div><p>Крутящий момент</p><strong id="torque-change">+18,7%</strong></div></article><article class="metric"><span class="metric__icon metric__icon--slip">≈</span><div><p>Фактическое проскальзывание</p><strong id="slip">33,8%</strong></div></article></div>
+        <section class="forecast" aria-labelledby="forecast-title"><div class="forecast__heading"><span aria-hidden="true">⌁</span><div><h3 id="forecast-title">Прогноз</h3><p>Для нового редуктора при неизменном винте</p></div></div><div class="forecast__grid"><div><p>Скорость при том же проскальзывании</p><strong id="projected-speed">37,9</strong><small>км/ч</small></div><div><p>Шаг для сохранения теоретической скорости</p><strong id="required-pitch">15,4</strong><small>дюйма</small></div></div></section>
+        <div class="notice" id="notice"><span aria-hidden="true">i</span><p><strong>Обратите внимание</strong>Расчёт идеализирован и не учитывает механические потери, нагрузку и изменение КПД винта.</p></div></section>
+    </main><footer class="shell">Теоретический расчёт · Фактические значения могут отличаться</footer>
   </body>
 </html>
