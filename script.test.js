@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 
 const element = () => ({
   value: '', textContent: '', checked: false, readOnly: false, disabled: false, hidden: false,
-  addEventListener() {}, setAttribute() {}, classList: { toggle() {} },
+  addEventListener() {}, setAttribute() {}, classList: { toggle() {} }, className: '',
 });
 global.document = { querySelector: element, querySelectorAll: () => [] };
 
-const { calculateComparison, calculateConfiguration, calculateRatio } = await import('./script.js');
+const { calculateComparison, calculateConfiguration, calculateRatio, classifySlip } = await import('./script.js');
 
 test('calculates ratio and configuration values', () => {
   assert.equal(calculateRatio(12, 21), 1.75);
@@ -56,4 +56,16 @@ test('accepts zero actual speed without producing an invalid percentage', () => 
   assert.equal(result.slip, 100);
   assert.equal(result.newCalculatedSpeed, 0);
   assert.equal(result.calculatedChange, null);
+});
+
+test('classifies propeller slip ranges', () => {
+  assert.equal(classifySlip(-1).key, 'error');
+  assert.equal(classifySlip(4.9).key, 'low');
+  assert.equal(classifySlip(5).key, 'optimal');
+  assert.equal(classifySlip(15).key, 'optimal');
+  assert.equal(classifySlip(15.1).key, 'acceptable');
+  assert.equal(classifySlip(20).key, 'acceptable');
+  assert.equal(classifySlip(20.1).key, 'elevated');
+  assert.equal(classifySlip(25).key, 'elevated');
+  assert.equal(classifySlip(25.1).key, 'high');
 });

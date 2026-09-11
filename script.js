@@ -2,8 +2,8 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 
 const fields = Object.fromEntries([
-  'engine-rpm', 'old-drive', 'old-driven', 'old-ratio', 'old-pitch', 'actual-speed',
-  'new-drive', 'new-driven', 'new-ratio', 'new-pitch', 'new-engine-rpm',
+  'engine-rpm', 'old-drive', 'old-driven', 'old-ratio', 'old-pitch', 'old-diameter', 'actual-speed',
+  'new-drive', 'new-driven', 'new-ratio', 'new-pitch', 'new-diameter', 'new-engine-rpm',
 ].map((id) => [id, $(`#${id}`)]));
 
 const integerFormat = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
@@ -20,6 +20,15 @@ export function calculateConfiguration(engineRpm, ratio, pitch) {
     shaftRpm,
     theoreticalSpeed: shaftRpm * pitch * 0.0254 * 60 / 1000,
   };
+}
+
+export function classifySlip(slip) {
+  if (slip < 0) return { key: 'error', comment: 'Ошибка или несоответствие исходных данных' };
+  if (slip < 5) return { key: 'low', comment: 'Ниже типичного диапазона — перепроверьте исходные данные' };
+  if (slip <= 15) return { key: 'optimal', comment: 'Оптимально' };
+  if (slip <= 20) return { key: 'acceptable', comment: 'Допустимо' };
+  if (slip <= 25) return { key: 'elevated', comment: 'Повышенное' };
+  return { key: 'high', comment: 'Высокое — проверьте установку/винт' };
 }
 
 export function calculateComparison({ oldEngineRpm, newEngineRpm, oldRatio, newRatio, oldPitch, newPitch, actualSpeed }) {
@@ -102,8 +111,17 @@ function applyMode() {
   $('#new-gearbox-fields').hidden = !changesGearbox;
   $('#new-propeller-fields').hidden = !changesPropeller;
   ['new-drive', 'new-driven', 'new-ratio'].forEach((id) => { fields[id].disabled = !changesGearbox; });
-  ['new-pitch', 'new-engine-rpm'].forEach((id) => { fields[id].disabled = !changesPropeller; });
+  ['new-pitch', 'new-diameter', 'new-engine-rpm'].forEach((id) => { fields[id].disabled = !changesPropeller; });
   if (changesGearbox) setManualMode('new'); else update();
+}
+
+function applySlipAppearance(slip) {
+  const classification = classifySlip(slip);
+  const card = $('#slip-card');
+  const value = $('#slip-result');
+  card.className = `slip-card slip-${classification.key}`;
+  value.className = `slip-${classification.key}`;
+  setText('slip-comment', classification.comment);
 }
 
 function update() {
@@ -113,19 +131,23 @@ function update() {
   const oldEngineRpm = validate(fields['engine-rpm']);
   const oldRatio = readRatio('old');
   const oldPitch = validate(fields['old-pitch']);
+  const oldDiameter = validate(fields['old-diameter']);
   const actualSpeed = validate(fields['actual-speed'], { allowZero: true });
   const newRatio = changesGearbox ? readRatio('new') : oldRatio;
   const newPitch = changesPropeller ? validate(fields['new-pitch']) : oldPitch;
+  const newDiameter = changesPropeller ? validate(fields['new-diameter']) : oldDiameter;
   const rpmText = fields['new-engine-rpm'].value.trim();
   const newEngineRpm = changesPropeller && rpmText ? validate(fields['new-engine-rpm']) : oldEngineRpm;
   if (!rpmText) clearValidation(fields['new-engine-rpm']);
-  if ([oldEngineRpm, oldRatio, oldPitch, actualSpeed, newRatio, newPitch, newEngineRpm].some((value) => value === null)) return;
+  if ([oldEngineRpm, oldRatio, oldPitch, oldDiameter, actualSpeed, newRatio, newPitch, newDiameter, newEngineRpm].some((value) => value === null)) return;
 
   const result = calculateComparison({ oldEngineRpm, newEngineRpm, oldRatio, newRatio, oldPitch, newPitch, actualSpeed });
   setText('old-ratio-result', `${ratioFormat.format(oldRatio)} : 1`);
   setText('new-ratio-result', `${ratioFormat.format(newRatio)} : 1`);
   setText('old-pitch-result', `${decimalFormat.format(oldPitch)}″`);
   setText('new-pitch-result', `${decimalFormat.format(newPitch)}″`);
+  setText('old-diameter-result', `${decimalFormat.format(oldDiameter)}″`);
+  setText('new-diameter-result', `${decimalFormat.format(newDiameter)}″`);
   setText('old-engine-result', integerFormat.format(oldEngineRpm));
   setText('new-engine-result', integerFormat.format(newEngineRpm));
   setText('old-shaft-result', integerFormat.format(result.oldConfig.shaftRpm));
@@ -134,14 +156,14 @@ function update() {
   setText('new-theoretical-result', `${decimalFormat.format(result.newConfig.theoreticalSpeed)} км/ч`);
   setText('old-calculated-result', `${decimalFormat.format(actualSpeed)} км/ч`);
   setText('new-calculated-result', result.validSlip ? `${decimalFormat.format(result.newCalculatedSpeed)} км/ч` : '—');
-  setText('slip-result', result.validSlip ? `${decimalFormat.format(result.slip)}%` : 'Некорректно');
+  setText('slip-result', `${result.slip < 0 ? '−' : ''}${decimalFormat.format(Math.abs(result.slip))}%`);
   setText('shaft-change', formatPercent(result.shaftChange));
   setText('ratio-change', formatPercent(result.ratioChange));
   setText('pitch-change', formatPercent(result.pitchChange));
   setText('theoretical-change', formatPercent(result.theoreticalChange));
   setText('calculated-change', formatPercent(result.calculatedChange));
   setText('torque-change', formatPercent(result.torqueChange));
-  $('#slip-result').classList.toggle('value-warning', !result.validSlip);
+  applySlipAppearance(result.slip);
 }
 
 Object.values(fields).forEach((field) => field.addEventListener('input', update));
