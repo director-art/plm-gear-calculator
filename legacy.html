@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Расчёт характеристик редуктора и винта подвесного лодочного мотора" />
+    <title>Калькулятор редуктора ПЛМ</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" type="module"></script>
+  </head>
+  <body>
+    <header class="hero"><div class="shell">
+      <div class="eyebrow"><span aria-hidden="true">⚙</span> Инструмент для водномоторников</div>
+      <h1>Калькулятор<br /><span>редуктора ПЛМ</span></h1>
+      <p class="hero__lead">Сравните характеристики лодки до и после замены редуктора, винта или всей конфигурации.</p>
+    </div></header>
+
+    <main class="shell app-layout">
+      <form id="calculator-form" class="inputs" novalidate>
+        <section class="panel" aria-labelledby="source-title">
+          <div class="section-heading"><span class="step">01</span><div><h2 id="source-title">Исходная конфигурация</h2><p>Текущие параметры лодки</p></div></div>
+          <label class="field"><span class="field__label">Обороты двигателя</span><span class="input-wrap"><input id="engine-rpm" inputmode="numeric" value="6000" /><span class="unit">об/мин</span></span><span class="error" id="engine-rpm-error"></span></label>
+          <fieldset class="gear-set">
+            <legend><i class="dot dot--old"></i> Текущий редуктор</legend>
+            <div class="two-columns">
+              <label class="field"><span class="field__label">Ведущая шестерня</span><span class="input-wrap"><input id="old-drive" inputmode="numeric" value="12" /><span class="unit">зуб.</span></span><span class="error" id="old-drive-error"></span></label>
+              <label class="field"><span class="field__label">Ведомая шестерня</span><span class="input-wrap"><input id="old-driven" inputmode="numeric" value="21" /><span class="unit">зуб.</span></span><span class="error" id="old-driven-error"></span></label>
+            </div>
+            <label class="manual-toggle"><input id="old-manual" type="checkbox" /> Ввести передаточное число вручную</label>
+            <label class="field ratio-field"><span class="field__label">Передаточное число</span><span class="input-wrap"><input id="old-ratio" inputmode="decimal" value="1,75" readonly /><span class="unit">: 1</span></span><span class="error" id="old-ratio-error"></span></label>
+          </fieldset>
+          <div class="two-columns">
+            <label class="field"><span class="field__label">Текущий шаг винта</span><span class="input-wrap"><input id="old-pitch" inputmode="decimal" value="13" /><span class="unit">дюйм.</span></span><span class="error" id="old-pitch-error"></span></label>
+            <label class="field"><span class="field__label">Диаметр винта</span><span class="input-wrap"><input id="old-diameter" inputmode="decimal" value="13,5" /><span class="unit">дюйм.</span></span><span class="error" id="old-diameter-error"></span></label>
+          </div>
+          <label class="field"><span class="field__label">Фактическая скорость</span><span class="input-wrap"><input id="actual-speed" inputmode="decimal" value="45" /><span class="unit">км/ч</span></span><span class="error" id="actual-speed-error"></span></label>
+        </section>
+
+        <section class="panel change-panel" aria-labelledby="change-title">
+          <div class="section-heading"><span class="step">02</span><div><h2 id="change-title">Что меняем?</h2><p>Выберите вариант новой конфигурации</p></div></div>
+          <div class="mode-switch" role="radiogroup" aria-label="Что меняем">
+            <label><input type="radio" name="change-mode" value="gearbox" checked /><span>Редуктор</span></label>
+            <label><input type="radio" name="change-mode" value="propeller" /><span>Винт</span></label>
+            <label><input type="radio" name="change-mode" value="both" /><span>Редуктор + винт</span></label>
+          </div>
+          <div id="new-gearbox-fields">
+            <fieldset class="gear-set">
+              <legend><i class="dot dot--new"></i> Новый редуктор</legend>
+              <div class="two-columns">
+                <label class="field"><span class="field__label">Ведущая шестерня</span><span class="input-wrap"><input id="new-drive" inputmode="numeric" value="13" /><span class="unit">зуб.</span></span><span class="error" id="new-drive-error"></span></label>
+                <label class="field"><span class="field__label">Ведомая шестерня</span><span class="input-wrap"><input id="new-driven" inputmode="numeric" value="27" /><span class="unit">зуб.</span></span><span class="error" id="new-driven-error"></span></label>
+              </div>
+              <label class="manual-toggle"><input id="new-manual" type="checkbox" /> Ввести передаточное число вручную</label>
+              <label class="field ratio-field"><span class="field__label">Передаточное число</span><span class="input-wrap"><input id="new-ratio" inputmode="decimal" value="2,08" readonly /><span class="unit">: 1</span></span><span class="error" id="new-ratio-error"></span></label>
+            </fieldset>
+          </div>
+          <div id="new-propeller-fields" hidden>
+            <div class="two-columns">
+              <label class="field"><span class="field__label">Новый шаг винта</span><span class="input-wrap"><input id="new-pitch" inputmode="decimal" value="15" /><span class="unit">дюйм.</span></span><span class="error" id="new-pitch-error"></span></label>
+              <label class="field"><span class="field__label">Новый диаметр винта</span><span class="input-wrap"><input id="new-diameter" inputmode="decimal" value="13,5" /><span class="unit">дюйм.</span></span><span class="error" id="new-diameter-error"></span></label>
+            </div>
+            <label class="field"><span class="field__label">Обороты двигателя после изменения</span><span class="input-wrap"><input id="new-engine-rpm" inputmode="numeric" placeholder="Как сейчас" /><span class="unit">об/мин</span></span><span class="error" id="new-engine-rpm-error"></span></label>
+          </div>
+        </section>
+      </form>
+
+      <section class="results" aria-labelledby="results-title" aria-live="polite">
+        <div class="section-heading"><span class="step">03</span><div><h2 id="results-title">Было / Стало</h2><p>Сравнение конфигураций</p></div></div>
+        <div class="comparison-table">
+          <div class="comparison-head"><span>Параметр</span><b>БЫЛО</b><b>СТАЛО</b></div>
+          <div><span>Передаточное число</span><strong id="old-ratio-result">1,75 : 1</strong><strong id="new-ratio-result">2,08 : 1</strong></div>
+          <div><span>Шаг винта</span><strong id="old-pitch-result">13,0″</strong><strong id="new-pitch-result">13,0″</strong></div>
+          <div><span>Диаметр винта</span><strong id="old-diameter-result">13,5″</strong><strong id="new-diameter-result">13,5″</strong></div>
+          <div><span>Обороты двигателя</span><strong id="old-engine-result">6 000</strong><strong id="new-engine-result">6 000</strong></div>
+          <div><span>Обороты гребного вала</span><strong id="old-shaft-result">3 429</strong><strong id="new-shaft-result">2 889</strong></div>
+          <div><span>Теоретическая скорость</span><strong id="old-theoretical-result">67,9 км/ч</strong><strong id="new-theoretical-result">57,2 км/ч</strong></div>
+          <div><span>Скорость с учётом slip</span><strong id="old-calculated-result">45,0 км/ч</strong><strong id="new-calculated-result">37,9 км/ч</strong></div>
+          <div class="engineering-row"><span>Коэффициент поступи J</span><strong id="old-j-result">0,64</strong><strong id="new-j-result">0,64</strong></div>
+        </div>
+
+        <div class="engineering-note">
+          <strong>Коэффициент поступи J = V / (n × D)</strong>
+          <p>Для исходной конфигурации в качестве V используется фактическая скорость лодки. Для новой — расчётная скорость при том же slip. Это приближение: реальная скорость потока через винт может отличаться от скорости лодки.</p>
+        </div>
+
+        <section class="forecast" aria-labelledby="forecast-title">
+          <div class="forecast__heading"><span aria-hidden="true">⌁</span><div><h3 id="forecast-title">Изменения</h3><p>Относительно исходной конфигурации</p></div></div>
+          <div class="change-grid">
+            <div><span>Обороты вала</span><strong id="shaft-change">−15,7%</strong></div>
+            <div><span>Передаточное число</span><strong id="ratio-change">+18,7%</strong></div>
+            <div><span>Шаг винта</span><strong id="pitch-change">0,0%</strong></div>
+            <div><span>Теоретическая скорость</span><strong id="theoretical-change">−15,7%</strong></div>
+            <div><span>Расчётная скорость</span><strong id="calculated-change">−15,7%</strong></div>
+            <div><span>Крутящий момент</span><strong id="torque-change">+18,7%</strong></div>
+          </div>
+        </section>
+
+        <div class="slip-card" id="slip-card">
+          <div><span>Исходное проскальзывание винта</span><strong id="slip-result">33,8%</strong></div>
+          <p id="slip-comment">Высокое — проверьте установку/винт</p>
+        </div>
+        <div class="slip-scale" aria-label="Оценка проскальзывания">
+          <span class="slip-optimal">5–15% — оптимально</span>
+          <span class="slip-acceptable">15–20% — допустимо</span>
+          <span class="slip-elevated">20–25% — повышенное</span>
+          <span class="slip-high">&gt;25% — высокое</span>
+        </div>
+
+        <div class="notice"><span aria-hidden="true">i</span><p><strong>Важно</strong>Прогноз предполагает неизменное проскальзывание винта. Фактическое значение после замены винта может отличаться.</p></div>
+      </section>
+    </main>
+    <footer class="shell">Теоретический расчёт · Фактические значения могут отличаться</footer>
+  </body>
+</html>
