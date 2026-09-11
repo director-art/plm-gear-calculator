@@ -9,6 +9,7 @@ const fields = Object.fromEntries([
 const integerFormat = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
 const decimalFormat = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 const ratioFormat = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const jFormat = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export function calculateRatio(driveTeeth, drivenTeeth) {
   return drivenTeeth / driveTeeth;
@@ -22,6 +23,14 @@ export function calculateConfiguration(engineRpm, ratio, pitch) {
   };
 }
 
+export function calculateAdvanceRatio(speedKmh, shaftRpm, diameterInches) {
+  if (shaftRpm <= 0 || diameterInches <= 0) return null;
+  const speedMs = speedKmh / 3.6;
+  const revolutionsPerSecond = shaftRpm / 60;
+  const diameterMeters = diameterInches * 0.0254;
+  return speedMs / (revolutionsPerSecond * diameterMeters);
+}
+
 export function classifySlip(slip) {
   if (slip < 0) return { key: 'error', comment: 'Ошибка или несоответствие исходных данных' };
   if (slip < 5) return { key: 'low', comment: 'Ниже типичного диапазона — перепроверьте исходные данные' };
@@ -31,15 +40,17 @@ export function classifySlip(slip) {
   return { key: 'high', comment: 'Высокое — проверьте установку/винт' };
 }
 
-export function calculateComparison({ oldEngineRpm, newEngineRpm, oldRatio, newRatio, oldPitch, newPitch, actualSpeed }) {
+export function calculateComparison({ oldEngineRpm, newEngineRpm, oldRatio, newRatio, oldPitch, newPitch, oldDiameter, newDiameter, actualSpeed }) {
   const oldConfig = calculateConfiguration(oldEngineRpm, oldRatio, oldPitch);
   const newConfig = calculateConfiguration(newEngineRpm, newRatio, newPitch);
   const slip = (oldConfig.theoreticalSpeed - actualSpeed) / oldConfig.theoreticalSpeed * 100;
   const validSlip = slip >= 0 && slip <= 100;
   const newCalculatedSpeed = validSlip ? newConfig.theoreticalSpeed * (1 - slip / 100) : null;
+  const oldAdvanceRatio = calculateAdvanceRatio(actualSpeed, oldConfig.shaftRpm, oldDiameter);
+  const newAdvanceRatio = newCalculatedSpeed === null ? null : calculateAdvanceRatio(newCalculatedSpeed, newConfig.shaftRpm, newDiameter);
 
   return {
-    oldConfig, newConfig, slip, validSlip, newCalculatedSpeed,
+    oldConfig, newConfig, slip, validSlip, newCalculatedSpeed, oldAdvanceRatio, newAdvanceRatio,
     shaftChange: percentChange(oldConfig.shaftRpm, newConfig.shaftRpm),
     ratioChange: percentChange(oldRatio, newRatio),
     pitchChange: percentChange(oldPitch, newPitch),
@@ -141,7 +152,7 @@ function update() {
   if (!rpmText) clearValidation(fields['new-engine-rpm']);
   if ([oldEngineRpm, oldRatio, oldPitch, oldDiameter, actualSpeed, newRatio, newPitch, newDiameter, newEngineRpm].some((value) => value === null)) return;
 
-  const result = calculateComparison({ oldEngineRpm, newEngineRpm, oldRatio, newRatio, oldPitch, newPitch, actualSpeed });
+  const result = calculateComparison({ oldEngineRpm, newEngineRpm, oldRatio, newRatio, oldPitch, newPitch, oldDiameter, newDiameter, actualSpeed });
   setText('old-ratio-result', `${ratioFormat.format(oldRatio)} : 1`);
   setText('new-ratio-result', `${ratioFormat.format(newRatio)} : 1`);
   setText('old-pitch-result', `${decimalFormat.format(oldPitch)}″`);
@@ -156,6 +167,8 @@ function update() {
   setText('new-theoretical-result', `${decimalFormat.format(result.newConfig.theoreticalSpeed)} км/ч`);
   setText('old-calculated-result', `${decimalFormat.format(actualSpeed)} км/ч`);
   setText('new-calculated-result', result.validSlip ? `${decimalFormat.format(result.newCalculatedSpeed)} км/ч` : '—');
+  setText('old-j-result', result.oldAdvanceRatio === null ? '—' : jFormat.format(result.oldAdvanceRatio));
+  setText('new-j-result', result.newAdvanceRatio === null ? '—' : jFormat.format(result.newAdvanceRatio));
   setText('slip-result', `${result.slip < 0 ? '−' : ''}${decimalFormat.format(Math.abs(result.slip))}%`);
   setText('shaft-change', formatPercent(result.shaftChange));
   setText('ratio-change', formatPercent(result.ratioChange));
