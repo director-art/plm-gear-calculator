@@ -1,0 +1,28 @@
+/* Точечные правки нового интерфейса */
+.dealer-brand{background:#fff url('yamaha-logo.svg') center/contain no-repeat!important;min-height:112px;padding:0!important}
+.dealer-brand>*{display:none!important}
+
+.prop-icon{font-size:0!important;background:url('propeller.svg') center/52px 52px no-repeat;color:#e7f4ff!important}
+.prop-icon::before{content:'';display:block;width:64px;height:64px}
+
+.mode-switch label:nth-child(2) span{font-size:0;display:flex;align-items:center;justify-content:center;gap:8px}
+.mode-switch label:nth-child(2) span::before{content:'';width:20px;height:20px;flex:0 0 20px;background:currentColor;mask:url('propeller.svg') center/contain no-repeat;-webkit-mask:url('propeller.svg') center/contain no-repeat}
+.mode-switch label:nth-child(2) span::after{content:'Винт';font-size:12px}
+
+/* Ровная таблица диапазонов slip без наложений */
+.slip-scale{display:grid!important;grid-template-columns:1fr!important;gap:2px!important;margin-top:12px!important}
+.slip-scale span{position:relative!important;display:flex!important;align-items:stretch!important;min-height:38px!important;padding:0!important;border:0!important;border-radius:5px!important;background:#f4f6f8!important;color:#394f65!important;font-size:0!important;font-weight:700!important;overflow:hidden!important;text-align:left!important;line-height:1.25!important}
+.slip-scale span::before{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 118px!important;width:118px!important;margin:0!important;padding:0 8px!important;color:#fff!important;font-size:11px!important;font-weight:850!important;text-align:center!important;box-sizing:border-box!important}
+.slip-scale span::after{display:flex!important;align-items:center!important;flex:1 1 auto!important;min-width:0!important;padding:8px 12px!important;color:#394f65!important;font-size:11px!important;font-weight:700!important;box-sizing:border-box!important;white-space:normal!important}
+.slip-scale .slip-optimal::before{content:'5 – 15%'!important;background:#31a66d!important}.slip-scale .slip-optimal::after{content:'Оптимально'!important}
+.slip-scale .slip-acceptable::before{content:'>15 – 20%'!important;background:#348ed8!important}.slip-scale .slip-acceptable::after{content:'Допустимо'!important}
+.slip-scale .slip-elevated::before{content:'>20 – 25%'!important;background:#f29a2e!important}.slip-scale .slip-elevated::after{content:'Повышенное'!important}
+.slip-scale .slip-high::before{content:'>25%'!important;background:#e7484d!important}.slip-scale .slip-high::after{content:'Высокое, проверьте установку/винт'!important}
+
+/* Карточка текущего slip не должна влиять на сетку подсказки */
+.side-card .slip-card{margin:0 0 10px!important}
+.side-card .slip-card>div{min-height:54px!important}
+.side-card .slip-card p{margin:7px 0 0!important;line-height:1.35!important}
+
+@media(max-width:1100px){.dealer-brand{display:none!important}}
+@media(max-width:820px){.prop-icon{display:none!important}.slip-scale span::before{flex-basis:106px!important;width:106px!important}}
