@@ -1,12 +1,36 @@
 /* Точечные правки нового интерфейса */
-.dealer-brand{background:#fff url('yamaha-logo.svg') center/contain no-repeat!important;min-height:112px;padding:0!important}
+/* Логотип берём как готовое изображение из согласованного макета, без перерисовки. */
+.dealer-brand{
+  width:265px!important;
+  min-height:145px!important;
+  padding:0!important;
+  align-self:center!important;
+  background:#fff url('yamaha-logo-exact.webp') center/265px 145px no-repeat!important;
+}
 .dealer-brand>*{display:none!important}
 
-.prop-icon{font-size:0!important;background:url('propeller.svg') center/52px 52px no-repeat;color:#e7f4ff!important}
+/* Гребной винт — точное изображение из макета, а не нарисованный заново SVG. */
+.prop-icon{
+  font-size:0!important;
+  background:url('propeller-exact.png') center/64px 64px no-repeat!important;
+  color:transparent!important;
+}
 .prop-icon::before{content:'';display:block;width:64px;height:64px}
 
-.mode-switch label:nth-child(2) span{font-size:0;display:flex;align-items:center;justify-content:center;gap:8px}
-.mode-switch label:nth-child(2) span::before{content:'';width:20px;height:20px;flex:0 0 20px;background:currentColor;mask:url('propeller.svg') center/contain no-repeat;-webkit-mask:url('propeller.svg') center/contain no-repeat}
+.mode-switch label:nth-child(2) span{
+  font-size:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+.mode-switch label:nth-child(2) span::before{
+  content:'';
+  width:24px;
+  height:24px;
+  flex:0 0 24px;
+  background:url('propeller-exact.png') center/contain no-repeat;
+}
 .mode-switch label:nth-child(2) span::after{content:'Винт';font-size:12px}
 
 /* Ровная таблица диапазонов slip без наложений */
