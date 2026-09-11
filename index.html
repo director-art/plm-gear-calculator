@@ -31,8 +31,9 @@
           </fieldset>
           <div class="two-columns">
             <label class="field"><span class="field__label">Текущий шаг винта</span><span class="input-wrap"><input id="old-pitch" inputmode="decimal" value="13" /><span class="unit">дюйм.</span></span><span class="error" id="old-pitch-error"></span></label>
-            <label class="field"><span class="field__label">Фактическая скорость</span><span class="input-wrap"><input id="actual-speed" inputmode="decimal" value="45" /><span class="unit">км/ч</span></span><span class="error" id="actual-speed-error"></span></label>
+            <label class="field"><span class="field__label">Диаметр винта</span><span class="input-wrap"><input id="old-diameter" inputmode="decimal" value="13,5" /><span class="unit">дюйм.</span></span><span class="error" id="old-diameter-error"></span></label>
           </div>
+          <label class="field"><span class="field__label">Фактическая скорость</span><span class="input-wrap"><input id="actual-speed" inputmode="decimal" value="45" /><span class="unit">км/ч</span></span><span class="error" id="actual-speed-error"></span></label>
         </section>
 
         <section class="panel change-panel" aria-labelledby="change-title">
@@ -56,8 +57,9 @@
           <div id="new-propeller-fields" hidden>
             <div class="two-columns">
               <label class="field"><span class="field__label">Новый шаг винта</span><span class="input-wrap"><input id="new-pitch" inputmode="decimal" value="15" /><span class="unit">дюйм.</span></span><span class="error" id="new-pitch-error"></span></label>
-              <label class="field"><span class="field__label">Обороты двигателя после изменения</span><span class="input-wrap"><input id="new-engine-rpm" inputmode="numeric" placeholder="Как сейчас" /><span class="unit">об/мин</span></span><span class="error" id="new-engine-rpm-error"></span></label>
+              <label class="field"><span class="field__label">Новый диаметр винта</span><span class="input-wrap"><input id="new-diameter" inputmode="decimal" value="13,5" /><span class="unit">дюйм.</span></span><span class="error" id="new-diameter-error"></span></label>
             </div>
+            <label class="field"><span class="field__label">Обороты двигателя после изменения</span><span class="input-wrap"><input id="new-engine-rpm" inputmode="numeric" placeholder="Как сейчас" /><span class="unit">об/мин</span></span><span class="error" id="new-engine-rpm-error"></span></label>
           </div>
         </section>
       </form>
@@ -68,6 +70,7 @@
           <div class="comparison-head"><span>Параметр</span><b>БЫЛО</b><b>СТАЛО</b></div>
           <div><span>Передаточное число</span><strong id="old-ratio-result">1,75 : 1</strong><strong id="new-ratio-result">2,08 : 1</strong></div>
           <div><span>Шаг винта</span><strong id="old-pitch-result">13,0″</strong><strong id="new-pitch-result">13,0″</strong></div>
+          <div><span>Диаметр винта</span><strong id="old-diameter-result">13,5″</strong><strong id="new-diameter-result">13,5″</strong></div>
           <div><span>Обороты двигателя</span><strong id="old-engine-result">6 000</strong><strong id="new-engine-result">6 000</strong></div>
           <div><span>Обороты гребного вала</span><strong id="old-shaft-result">3 429</strong><strong id="new-shaft-result">2 889</strong></div>
           <div><span>Теоретическая скорость</span><strong id="old-theoretical-result">67,9 км/ч</strong><strong id="new-theoretical-result">57,2 км/ч</strong></div>
@@ -85,7 +88,18 @@
             <div><span>Крутящий момент</span><strong id="torque-change">+18,7%</strong></div>
           </div>
         </section>
-        <div class="slip-line"><span>Исходное проскальзывание винта</span><strong id="slip-result">33,8%</strong></div>
+
+        <div class="slip-card" id="slip-card">
+          <div><span>Исходное проскальзывание винта</span><strong id="slip-result">33,8%</strong></div>
+          <p id="slip-comment">Высокое — проверьте установку/винт</p>
+        </div>
+        <div class="slip-scale" aria-label="Оценка проскальзывания">
+          <span class="slip-optimal">5–15% — оптимально</span>
+          <span class="slip-acceptable">15–20% — допустимо</span>
+          <span class="slip-elevated">20–25% — повышенное</span>
+          <span class="slip-high">&gt;25% — высокое</span>
+        </div>
+
         <div class="notice"><span aria-hidden="true">i</span><p><strong>Важно</strong>Прогноз предполагает неизменное проскальзывание винта. Фактическое значение после замены винта может отличаться.</p></div>
       </section>
     </main>
